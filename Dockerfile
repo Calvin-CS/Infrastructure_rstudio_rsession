@@ -62,6 +62,7 @@ RUN apt-get update -y && \
     libcairo2 \
     libdatrie1 \
     libfontconfig1 \
+    libgdal-dev \
     libgfortran-9-dev \
     libgfortran5 \
     libgraphite2-3 \
@@ -70,9 +71,11 @@ RUN apt-get update -y && \
     libicu-dev \
     libjbig0 \
     libjpeg-turbo8 \
+    libjpeg-turbo8-dev \
     libjpeg8 \
     liblapack-dev \
     liblapack3 \
+    libmysqlclient-dev \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
     libpangoft2-1.0-0 \
@@ -82,6 +85,7 @@ RUN apt-get update -y && \
     libpcre2-32-0 \
     libpcre2-dev \
     libpcre2-posix2 \
+    libpng-dev \
     libpixman-1-0 \
     libsm6 \
     libtcl8.6 \
