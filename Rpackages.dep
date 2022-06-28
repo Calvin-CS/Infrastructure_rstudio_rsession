@@ -62,6 +62,7 @@ libxrender1
 libxss1
 libxt6
 net-tools
+nfs-common
 rrdtool
 subversion
 unzip

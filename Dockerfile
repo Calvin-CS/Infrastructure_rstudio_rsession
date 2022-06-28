@@ -6,7 +6,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.0
-ARG RSW_VERSION=2022.02.2+485.pro2
+ARG RSW_VERSION=2022.02.3+492.pro3
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 
