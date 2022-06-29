@@ -37,6 +37,9 @@ RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects
 
 # Install VSCode code-server --------------------------------------------------#
 # NOTE: skipped, as we will be including VSCode code-server via NFS mount 
+#   however, we need to make sure we copy the conf files
+COPY inc/vscode.conf /etc/rstudio/vscode.conf
+COPY inc/vscode-user-settings.json /etc/rstudio/vscode-user-settings.json
 
 # Locale configuration --------------------------------------------------------#
 
