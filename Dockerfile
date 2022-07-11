@@ -29,9 +29,6 @@ RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects
 # Install R -------------------------------------------------------------------#
 # NOTE: skipped, as we will be including R via NFS mount.  However, make some symlinks for R and Rscript
 
-#RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
-#    ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
-
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
 
