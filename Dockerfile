@@ -5,6 +5,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
+ARG R_VERSION=4.2.0
 
 # Start with base Ubuntu, and install all required dependencies
 COPY inc/Rpackages.dep /root/Rpackages.dep
@@ -29,7 +30,8 @@ RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects
 # Install R -------------------------------------------------------------------#
 # NOTE: skipped, as we will be including R via NFS mount.  However,
 # add to the path
-ENV PATH="${PATH}:/opt/R"
+RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
+    ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
