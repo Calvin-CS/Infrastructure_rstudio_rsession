@@ -33,6 +33,9 @@ RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects
 RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
+RUN rm -f /etc/rstudio/r-versions
+COPY inc/r-versions /etc/rstudio/r-versions
+
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
 
