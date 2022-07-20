@@ -42,9 +42,16 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
 COPY inc/vscode.conf /etc/rstudio/vscode.conf
 COPY inc/vscode-user-settings.json /etc/rstudio/vscode-user-settings.json
 
+# Debugging
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
+    nmap \
+    telnet && \
+    rm -rf /var/lib/apt/lists/*
+
 # Locale configuration --------------------------------------------------------#
 
-RUN apt-get update -y && \
+RUN apt update -y && \
     DEBIAN_FRONTEND=noninteractive apt install -y locales && \
     rm -rf /var/lib/apt/lists/*
 
