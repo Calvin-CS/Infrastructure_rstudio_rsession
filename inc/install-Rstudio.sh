@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # install Rstudio
-export RSW_VERSION=2022.02.3+492.pro3
+export RSW_VERSION=2022.07.0-548.pro5
 export RSW_NAME=rstudio-workbench
 export RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 
