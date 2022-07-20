@@ -27,7 +27,9 @@ EXPOSE 8788/tcp
 RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects
 
 # Install R -------------------------------------------------------------------#
-# NOTE: skipped, as we will be including R via NFS mount.  However, make some symlinks for R and Rscript
+# NOTE: skipped, as we will be including R via NFS mount.  However,
+# add to the path
+ENV PATH="${PATH}:/opt/R"
 
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
