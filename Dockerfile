@@ -5,7 +5,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.0
-ARG BUILDDATE=20220720-01
+ARG BUILDDATE=20220721-01
 
 # Start with base Ubuntu, and install all required dependencies
 COPY inc/Rpackages.dep /root/Rpackages.dep
