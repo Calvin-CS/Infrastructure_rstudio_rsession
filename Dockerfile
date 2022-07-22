@@ -43,6 +43,7 @@ COPY inc/idmapd.conf /etc/idmapd.conf
 
 # use the secrets to edit sssd.conf appropriately
 RUN --mount=type=secret,id=sssd ls -al /run/secrets && \
+    cat /run/secrets/sssd && \
     source /run/secrets/sssd && \
     sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf && \
     sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf && \
