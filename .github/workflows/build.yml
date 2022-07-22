@@ -31,4 +31,4 @@ jobs:
           tags: ${{secrets.ACR_NAME}}/rsession:latest
           push: true
           secrets: |
-            sssd="${{ secrets.SSSD_SECRET }}"
+            sssd=${{ secrets.SSSD_SECRET }}
