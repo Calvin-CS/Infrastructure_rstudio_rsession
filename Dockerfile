@@ -31,7 +31,7 @@ COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
 RUN ln -s -f /etc/ssl/certs/CalvinCollege-ad-CA.crt /etc/ssl/certs/ddbc78f4.0
 
 # solves error "chfn: PAM: System error"
-RUN ln -s -f /bin/true /usr/bin/chfn
+#RUN ln -s -f /bin/true /usr/bin/chfn
 
 # krb5.conf, sssd.conf, idmapd.conf
 COPY inc/krb5.conf /etc/krb5.conf
@@ -42,7 +42,8 @@ RUN chown root:root /etc/sssd/sssd.conf
 COPY inc/idmapd.conf /etc/idmapd.conf
 
 # use the secrets to edit sssd.conf appropriately
-RUN --mount=type=secret,id=sssd source /run/secrets/sssd && \
+RUN --mount=type=secret,id=sssd ls -al /run/secrets &&
+    source /run/secrets/sssd && \
     sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf && \
     sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf && \
     sed -i 's@%%DEFAULT_DOMAIN_SID%%@'"$DEFAULT_DOMAIN_SID"'@g' /etc/sssd/sssd.conf
@@ -96,14 +97,6 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # Setup multiple stuff going on in the container instead of just single access  -------------------------#
-# Not sure if this stuff is needed or not...  keep it for now
-#ARG TINI_VERSION=0.19.0
-#RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-#    chmod +x /usr/local/bin/tini
-
-#RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
-#    chmod +x /usr/local/bin/wait-for-it.sh
-
 # S6 overlay from https://github.com/just-containers/s6-overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
@@ -114,11 +107,11 @@ ENTRYPOINT ["/init"]
 COPY s6-overlay /etc/s6-overlay
 
 # Debugging
-RUN apt update -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
-    nmap \
-    telnet \
-    vim \
-    iputils-ping \
-    bind9-dnsutils && \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt update -y && \
+#    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
+#    nmap \
+#    telnet \
+#    vim \
+#    iputils-ping \
+#    bind9-dnsutils && \
+#    rm -rf /var/lib/apt/lists/*
