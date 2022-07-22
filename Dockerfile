@@ -42,8 +42,8 @@ RUN chown root:root /etc/sssd/sssd.conf
 COPY inc/idmapd.conf /etc/idmapd.conf
 
 # use the secrets to edit sssd.conf appropriately
-RUN --mount=type=secret,id=sssd cat /run/secrets/*
-RUN --mount=type=secret,id=sssd cat /run/secrets/sssd && \
+RUN --mount=type=secret,id=sssd cat /run/secrets/sssd
+RUN --mount=type=secret,id=sssd \
     source /run/secrets/sssd && \
     sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf && \
     sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf && \
