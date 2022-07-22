@@ -7,7 +7,19 @@ ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.0
 ARG BUILDDATE=20220722-01
 
-# Start with base Ubuntu, and install all required dependencies
+# Start with base Ubuntu, add a few system packages
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y realmd \
+    sssd \
+    sssd-ad \
+    sssd-krb5 \
+    sssd-tools \
+    libnfsidmap2 \
+    libsss-idmap0 \
+    libsss-nss-idmap0 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Add all packages needed for R, and install all required dependencies
 COPY inc/Rpackages.dep /root/Rpackages.dep
 RUN apt update -y && \
     DEBIAN_FRONTEND=noninteractive xargs apt install -y < /root/Rpackages.dep && \
