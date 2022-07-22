@@ -6,7 +6,7 @@ ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.0
 ARG S6_OVERLAY_VERSION=3.1.0.1
-ARG BUILDDATE=20220722-01
+ARG BUILDDATE=20220722-10
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
@@ -14,7 +14,6 @@ SHELL ["/bin/bash", "-c"]
 # Start with base Ubuntu, add a few system packages
 RUN apt update -y && \
     DEBIAN_FRONTEND=noninteractive apt install -y \
-    realmd \
     sssd \
     sssd-ad \
     sssd-krb5 \
@@ -42,11 +41,14 @@ RUN chown root:root /etc/sssd/sssd.conf
 COPY inc/idmapd.conf /etc/idmapd.conf
 
 # use the secrets to edit sssd.conf appropriately
-RUN --mount=type=secret,id=sssd ls -al /run/secrets && cat /run/secrets/sssd
-RUN --mount=type=secret,id=sssd \
-    source /run/secrets/sssd && \
-    sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf && \
-    sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf && \
+RUN --mount=type=secret,id=LDAP_BIND_USER \
+    source /run/secrets/LDAP_BIND_USER && \
+    sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf
+RUN --mount=type=secret,id=LDAP_BIND_PASSWORD \
+    source /run/secrets/LDAP_BIND_PASSWORD && \
+    sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf
+RUN --mount=type=secret,id=DEFAULT_DOMAIN_SID \
+    source /run/secrets/DEFAULT_DOMAIN_SID && \
     sed -i 's@%%DEFAULT_DOMAIN_SID%%@'"$DEFAULT_DOMAIN_SID"'@g' /etc/sssd/sssd.conf
 
 # Add all packages needed for R, and install all required dependencies
