@@ -5,7 +5,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.0
-ARG BUILDDATE=20220721-01
+ARG BUILDDATE=20220722-01
 
 # Start with base Ubuntu, and install all required dependencies
 COPY inc/Rpackages.dep /root/Rpackages.dep
@@ -62,3 +62,6 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+# Final configuration files
+COPY inc/idmapd.conf /etc/idmapd.conf
