@@ -31,4 +31,6 @@ jobs:
           tags: ${{secrets.ACR_NAME}}/rsession:latest
           push: true
           secrets: |
-            sssd=${{ secrets.SSSD_SECRET }}
+            LDAP_BIND_USER=${{ secrets.LDAP_BIND_USER }}
+            LDAP_BIND_PASSWORD=${{ secrets.LDAP_BIND_PASSWORD }}
+            DEFAULT_DOMAIN_SID=${{ secrets.DEFAULT_DOMAIN_SID }}
