@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if test "$1" -eq 256 ; then
+  e=$((128 + $2))
+else
+  e="$1"
+fi
+
+cat /var/log/sssd/sssd.log
+cat /var/log/sssd/sssd_AD.CALVIN.EDU.log
+cat /var/log/sssd/ldap_child.log
+cat /var/log/sssd/krb5_child.log
+
+echo "$e" > /run/s6-linux-init-container-results/exitcode
