@@ -61,11 +61,13 @@ libxml2-dev
 libxrender1
 libxss1
 libxt6
+nano-tiny
 net-tools
 nfs-common
 rrdtool
 subversion
 unzip
+vim-tiny
 wget
 x11-common
 zip

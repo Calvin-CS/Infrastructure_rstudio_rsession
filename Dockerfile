@@ -81,14 +81,13 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # Debugging
-RUN apt update -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
-    nmap \
-    telnet \
-    vim \
-    iputils-ping \
-    bind9-dnsutils && \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt update -y && \
+#    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
+#    nmap \
+#    telnet \
+#    iputils-ping \
+#    bind9-dnsutils && \
+#    rm -rf /var/lib/apt/lists/*
 
 # Drop all inc/ configuration files
 # krb5.conf, sssd.conf, idmapd.conf
@@ -98,6 +97,7 @@ COPY inc/sssd.conf /etc/sssd/sssd.conf
 RUN chmod 600 /etc/sssd/sssd.conf
 RUN chown root:root /etc/sssd/sssd.conf
 COPY inc/idmapd.conf /etc/idmapd.conf
+COPY inc/common-auth /etc/pam.d/common-auth
 
 # use the secrets to edit sssd.conf appropriately
 RUN --mount=type=secret,id=LDAP_BIND_USER \
