@@ -29,28 +29,6 @@ RUN apt update -y && \
 COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
 RUN ln -s -f /etc/ssl/certs/CalvinCollege-ad-CA.crt /etc/ssl/certs/ddbc78f4.0
 
-# solves error "chfn: PAM: System error"
-#RUN ln -s -f /bin/true /usr/bin/chfn
-
-# krb5.conf, sssd.conf, idmapd.conf
-COPY inc/krb5.conf /etc/krb5.conf
-COPY inc/nsswitch.conf /etc/nsswitch.conf
-COPY inc/sssd.conf /etc/sssd/sssd.conf
-RUN chmod 600 /etc/sssd/sssd.conf
-RUN chown root:root /etc/sssd/sssd.conf
-COPY inc/idmapd.conf /etc/idmapd.conf
-
-# use the secrets to edit sssd.conf appropriately
-RUN --mount=type=secret,id=LDAP_BIND_USER \
-    source /run/secrets/LDAP_BIND_USER && \
-    sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf
-RUN --mount=type=secret,id=LDAP_BIND_PASSWORD \
-    source /run/secrets/LDAP_BIND_PASSWORD && \
-    sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf
-RUN --mount=type=secret,id=DEFAULT_DOMAIN_SID \
-    source /run/secrets/DEFAULT_DOMAIN_SID && \
-    sed -i 's@%%DEFAULT_DOMAIN_SID%%@'"$DEFAULT_DOMAIN_SID"'@g' /etc/sssd/sssd.conf
-
 # Add all packages needed for R, and install all required dependencies
 COPY inc/Rpackages.dep /root/Rpackages.dep
 RUN apt update -y && \
@@ -99,6 +77,36 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+# Debugging
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
+    nmap \
+    telnet \
+    vim \
+    iputils-ping \
+    bind9-dnsutils && \
+    rm -rf /var/lib/apt/lists/*
+
+# Drop all inc/ configuration files
+# krb5.conf, sssd.conf, idmapd.conf
+COPY inc/krb5.conf /etc/krb5.conf
+COPY inc/nsswitch.conf /etc/nsswitch.conf
+COPY inc/sssd.conf /etc/sssd/sssd.conf
+RUN chmod 600 /etc/sssd/sssd.conf
+RUN chown root:root /etc/sssd/sssd.conf
+COPY inc/idmapd.conf /etc/idmapd.conf
+
+# use the secrets to edit sssd.conf appropriately
+RUN --mount=type=secret,id=LDAP_BIND_USER \
+    source /run/secrets/LDAP_BIND_USER && \
+    sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf
+RUN --mount=type=secret,id=LDAP_BIND_PASSWORD \
+    source /run/secrets/LDAP_BIND_PASSWORD && \
+    sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf
+RUN --mount=type=secret,id=DEFAULT_DOMAIN_SID \
+    source /run/secrets/DEFAULT_DOMAIN_SID && \
+    sed -i 's@%%DEFAULT_DOMAIN_SID%%@'"$DEFAULT_DOMAIN_SID"'@g' /etc/sssd/sssd.conf
+
 # Setup multiple stuff going on in the container instead of just single access  -------------------------#
 #ARG TINI_VERSION=0.19.0
 #RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
@@ -113,15 +121,7 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
 
-ENTRYPOINT ["/init"]
-COPY s6-overlay /etc/s6-overlay
+ENV S6_CMD_WAIT_FOR_SERVICES=1 S6_CMD_WAIT_FOR_SERVICES_MAXTIME=5000
 
-# Debugging
-RUN apt update -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
-    nmap \
-    telnet \
-    vim \
-    iputils-ping \
-    bind9-dnsutils && \
-    rm -rf /var/lib/apt/lists/*
+ENTRYPOINT ["/init"]
+COPY s6-overlay/ /etc/s6-overlay
