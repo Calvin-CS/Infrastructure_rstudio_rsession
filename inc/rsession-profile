@@ -1,0 +1,2 @@
+export PATH=$PATH:/opt/R/4.2.0/bin:/opt/python/3.9.12/bin
+export RETICULATE_PYTHON=/opt/python/3.9.12/bin/python

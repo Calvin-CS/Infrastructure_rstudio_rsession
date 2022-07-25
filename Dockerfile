@@ -60,6 +60,8 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
 
 RUN rm -f /etc/rstudio/r-versions
 COPY inc/r-versions /etc/rstudio/r-versions
+COPY inc/r-versions /var/lib/rstudio-server/r-versions
+COPY inc/rsession-profile /etc/rstudio/rsession-profile
 
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
