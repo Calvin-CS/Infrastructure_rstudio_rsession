@@ -21,6 +21,9 @@ RUN apt update -y && \
     libnfsidmap2 \
     libsss-idmap0 \
     libsss-nss-idmap0 \
+    libnss-myhostname \
+    libnss-mymachines \
+    libnss-ldap \
     krb5-user \
     sssd-krb5 && \
     rm -rf /var/lib/apt/lists/*
