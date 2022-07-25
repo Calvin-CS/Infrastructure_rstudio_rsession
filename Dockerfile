@@ -97,7 +97,10 @@ COPY inc/sssd.conf /etc/sssd/sssd.conf
 RUN chmod 600 /etc/sssd/sssd.conf
 RUN chown root:root /etc/sssd/sssd.conf
 COPY inc/idmapd.conf /etc/idmapd.conf
+
+# pam configs
 COPY inc/common-auth /etc/pam.d/common-auth
+COPY inc/common-session /etc/pam.d/common-session
 
 # use the secrets to edit sssd.conf appropriately
 RUN --mount=type=secret,id=LDAP_BIND_USER \
