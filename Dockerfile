@@ -30,6 +30,8 @@ RUN apt update -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY inc/bashrc-unburden /root/bashrc-unburden
+COPY inc/unburden-home-dir.conf /etc/unburden-home-dir
+COPY inc/unburden-home-dir.list /etc/unburden-home-dir.list
 RUN sed -i 's/\#UNBURDEN_HOME=false/UNBURDEN_HOME=true/g' /etc/default/unburden-home-dir && \
     cat /root/bashrc-unburden >> /etc/bash.bashrc && \
     rm -f /root/bashrc-unburden
