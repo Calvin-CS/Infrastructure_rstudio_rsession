@@ -25,8 +25,14 @@ RUN apt update -y && \
     libnss-mymachines \
     libnss-ldap \
     krb5-user \
-    sssd-krb5 && \
+    sssd-krb5 \
+    unburden-home-dir && \
     rm -rf /var/lib/apt/lists/*
+
+COPY inc/bashrc-unburden /root/bashrc-unburden
+RUN sed -i 's/false/true/g' /etc/default/unburden-home-dir && \
+    cat /root/bashrc-unburden >> /etc/bash.bashrc && \
+    rm -f /root/bashrc-unburden
 
 # add CalvinAD trusted root certificate
 COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
@@ -119,13 +125,6 @@ RUN --mount=type=secret,id=DEFAULT_DOMAIN_SID \
     sed -i 's@%%DEFAULT_DOMAIN_SID%%@'"$DEFAULT_DOMAIN_SID"'@g' /etc/sssd/sssd.conf
 
 # Setup multiple stuff going on in the container instead of just single access  -------------------------#
-#ARG TINI_VERSION=0.19.0
-#RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-#    chmod +x /usr/local/bin/tini
-#
-#RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
-#    chmod +x /usr/local/bin/wait-for-it.sh
-
 # S6 overlay from https://github.com/just-containers/s6-overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
