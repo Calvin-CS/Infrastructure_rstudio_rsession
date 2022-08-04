@@ -14,6 +14,10 @@ apt clean
 rm -f /var/lib/rstudio-server/r-versions
 
 # drop conf files
-cp -f r-versions /var/lib/rstudio-server/
-cp -f r-versions /etc/rstudio/
-cp -f rsession-profile /etc/rstudio/
+if test -f r-versions; then
+	cp -f r-versions /var/lib/rstudio-server/
+	cp -f r-versions /etc/rstudio/
+fi
+if test -f rsession-profile; then
+	cp -f rsession-profile /etc/rstudio/
+fi

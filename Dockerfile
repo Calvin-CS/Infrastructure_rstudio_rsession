@@ -45,7 +45,10 @@ COPY inc/install-Rstudio.sh /root/install-Rstudio.sh
 RUN apt update --fix-missing && \
     /root/install-Rstudio.sh && \
     rm -f /root/install-Rstudio.sh && \
-    rm -rf /var/lib/apt/lists/* 
+    rm -rf /var/lib/apt/lists/*
+COPY inc/r-versions /var/lib/rstudio-server/r-versions
+COPY inc/r-versions /etc/rstudio/r-versions
+COPY inc/rsession-profile /etc/rstudio/rsession-profile
 
 EXPOSE 8788/tcp
 
