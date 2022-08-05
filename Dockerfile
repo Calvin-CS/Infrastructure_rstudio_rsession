@@ -32,8 +32,8 @@ RUN apt update -y && \
 COPY inc/bashrc-unburden /root/bashrc-unburden
 COPY inc/unburden-home-dir.conf /etc/unburden-home-dir
 COPY inc/unburden-home-dir.list /etc/unburden-home-dir.list
-RUN sed -i 's/\#UNBURDEN_HOME=false/UNBURDEN_HOME=true/g' /etc/default/unburden-home-dir && \
-    cat /root/bashrc-unburden >> /etc/bash.bashrc && \
+COPY inc/unburden-home-dir /etc/default/unburden-home-dir
+RUN cat /root/bashrc-unburden >> /etc/bash.bashrc && \
     rm -f /root/bashrc-unburden
 
 # add CalvinAD trusted root certificate
