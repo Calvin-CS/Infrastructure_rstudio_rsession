@@ -6,7 +6,7 @@ ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.0
 ARG S6_OVERLAY_VERSION=3.1.1.2
-ARG BUILDDATE=20220805-02
+ARG BUILDDATE=20220805-03
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
@@ -29,28 +29,30 @@ RUN apt update -y && \
     unburden-home-dir && \
     rm -rf /var/lib/apt/lists/*
 
-COPY inc/bashprofile-unburden /etc/profile.d/unburden.sh
-COPY inc/unburden-home-dir.conf /etc/unburden-home-dir
-COPY inc/unburden-home-dir.list /etc/unburden-home-dir.list
-COPY inc/unburden-home-dir /etc/default/unburden-home-dir
+# add unburden config files
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/bashprofile-unburden /etc/profile.d/unburden.sh
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir.conf /etc/unburden-home-dir
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir.list /etc/unburden-home-dir.list
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir /etc/default/unburden-home-dir
 RUN chmod 0755 /etc/profile.d/unburden.sh
 
 # add CalvinAD trusted root certificate
-COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/CalvinCollege-ad-CA.crt /etc/ssl/certs
+#COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
 RUN ln -s -f /etc/ssl/certs/CalvinCollege-ad-CA.crt /etc/ssl/certs/ddbc78f4.0
 
 # Drop all inc/ configuration files
 # krb5.conf, sssd.conf, idmapd.conf
-COPY inc/krb5.conf /etc/krb5.conf
-COPY inc/nsswitch.conf /etc/nsswitch.conf
-COPY inc/sssd.conf /etc/sssd/sssd.conf
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/krb5.conf /etc
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/nsswitch.conf /etc
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/sssd.conf /etc/sssd
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/idmapd.conf /etc
 RUN chmod 600 /etc/sssd/sssd.conf
 RUN chown root:root /etc/sssd/sssd.conf
-COPY inc/idmapd.conf /etc/idmapd.conf
 
 # pam configs
-COPY inc/common-auth /etc/pam.d/common-auth
-COPY inc/common-session /etc/pam.d/common-session
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/common-auth /etc/pam.d
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/common-session /etc/pam.d
 
 # use the secrets to edit sssd.conf appropriately
 RUN --mount=type=secret,id=LDAP_BIND_USER \
