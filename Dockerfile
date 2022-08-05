@@ -41,7 +41,7 @@ COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
 RUN ln -s -f /etc/ssl/certs/CalvinCollege-ad-CA.crt /etc/ssl/certs/ddbc78f4.0
 
 # Add all packages needed for R, and install all required dependencies
-COPY inc/Rpackages.dep /root/Rpackages.dep
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/Rpackages.dep /root
 RUN apt update -y && \
     DEBIAN_FRONTEND=noninteractive xargs apt install -y < /root/Rpackages.dep && \
     rm -f /root/Rpackages.dep && \
@@ -49,14 +49,11 @@ RUN apt update -y && \
 
 # Install RStudio Workbench session components -------------------------------#
 
-COPY inc/install-Rstudio.sh /root/install-Rstudio.sh
-RUN apt update --fix-missing && \
-    /root/install-Rstudio.sh && \
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/install-Rstudio.sh /root
+RUN apt update -y --fix-missing && \
+    /bin/sh /root/install-Rstudio.sh && \
     rm -f /root/install-Rstudio.sh && \
     rm -rf /var/lib/apt/lists/*
-COPY inc/r-versions /var/lib/rstudio-server/r-versions
-COPY inc/r-versions /etc/rstudio/r-versions
-COPY inc/rsession-profile /etc/rstudio/rsession-profile
 
 EXPOSE 8788/tcp
 
@@ -70,9 +67,9 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 RUN rm -f /etc/rstudio/r-versions
-COPY inc/r-versions /etc/rstudio/r-versions
-COPY inc/r-versions /var/lib/rstudio-server/r-versions
-COPY inc/rsession-profile /etc/rstudio/rsession-profile
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/r-versions /etc/rstudio
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/r-versions /var/lib/rstudio-server
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/rsession-profile /etc/rstudio
 
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
@@ -80,8 +77,8 @@ COPY inc/rsession-profile /etc/rstudio/rsession-profile
 # Install VSCode code-server --------------------------------------------------#
 # NOTE: skipped, as we will be including VSCode code-server via NFS mount 
 #   however, we need to make sure we copy the conf files
-COPY inc/vscode.conf /etc/rstudio/vscode.conf
-COPY inc/vscode-user-settings.json /etc/rstudio/vscode-user-settings.json
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/vscode.conf /etc/rstudio
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/vscode-user-settings.json /etc/rstudio
 
 # Locale configuration --------------------------------------------------------#
 RUN apt update -y && \
@@ -129,9 +126,10 @@ RUN --mount=type=secret,id=DEFAULT_DOMAIN_SID \
 # Setup multiple stuff going on in the container instead of just single access  -------------------------#
 # S6 overlay from https://github.com/just-containers/s6-overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+    tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && \
+    rm -f /tmp/s6-overlay-*.tar.xz
 
 ENV S6_CMD_WAIT_FOR_SERVICES=1 S6_CMD_WAIT_FOR_SERVICES_MAXTIME=5000
 
