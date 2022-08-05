@@ -16,11 +16,14 @@ libcairo2
 libcurl4-gnutls-dev
 libdatrie1
 libfontconfig1
+libfontconfig1-dev
+libfribidi-dev
 libgdal-dev
 libgfortran5
 libgfortran-9-dev
 libgraphite2-3
 libharfbuzz0b
+libharfbuzz-dev
 libice6
 libicu-dev
 libjbig0
