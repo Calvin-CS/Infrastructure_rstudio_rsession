@@ -29,12 +29,11 @@ RUN apt update -y && \
     unburden-home-dir && \
     rm -rf /var/lib/apt/lists/*
 
-COPY inc/bashrc-unburden /root/bashrc-unburden
+COPY inc/bashprofile-unburden /etc/profile.d/unburden.sh
 COPY inc/unburden-home-dir.conf /etc/unburden-home-dir
 COPY inc/unburden-home-dir.list /etc/unburden-home-dir.list
 COPY inc/unburden-home-dir /etc/default/unburden-home-dir
-RUN cat /root/bashrc-unburden >> /etc/bash.bashrc && \
-    rm -f /root/bashrc-unburden
+RUN chmod 0755 /etc/profile.d/unburden.sh
 
 # add CalvinAD trusted root certificate
 COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
