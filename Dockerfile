@@ -80,6 +80,9 @@ ENV S6_CMD_WAIT_FOR_SERVICES=1 S6_CMD_WAIT_FOR_SERVICES_MAXTIME=5000
 ENTRYPOINT ["/init"]
 COPY s6-overlay/ /etc/s6-overlay
 
+# Access control
+RUN echo "ldap_access_filter = memberOf=CN=CS-Rights-rstudio,OU=Groups,OU=CalvinCS,DC=ad,DC=calvin,DC=edu" >> /etc/sssd/sssd.conf
+
 # Add all packages needed for R, and install all required dependencies
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/Rpackages.dep /root
 RUN apt update -y && \
