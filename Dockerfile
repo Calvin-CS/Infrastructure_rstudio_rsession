@@ -24,6 +24,7 @@ RUN apt update -y && \
     libnss-myhostname \
     libnss-mymachines \
     libnss-ldap \
+    locales \
     krb5-user \
     sssd-krb5 \
     unburden-home-dir && \
