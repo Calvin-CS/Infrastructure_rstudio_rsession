@@ -36,6 +36,9 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir.list /etc/unburden-home-dir.list
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir /etc/default/unburden-home-dir
 RUN chmod 0755 /etc/profile.d/unburden.sh
+RUN chmod 0644 /etc/unburden-home-dir
+RUN chmod 0644 /etc/unburden-home-dir.list
+RUN chmod 0644 /etc/default/unburden-home-dir
 
 # add CalvinAD trusted root certificate
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/CalvinCollege-ad-CA.crt /etc/ssl/certs
