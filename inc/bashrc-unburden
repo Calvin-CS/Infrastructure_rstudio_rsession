@@ -2,5 +2,7 @@
 # section to add unburden home dir to global bashrc
 if [ -f /etc/X11/Xsession.d/25unburden-home-dir-xdg ]; then
 	. /etc/X11/Xsession.d/25unburden-home-dir-xdg
-	unburden-home-dir
+	if [ "$EUID" -ne 0 ]; then
+		unburden-home-dir
+	fi
 fi
