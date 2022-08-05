@@ -6,7 +6,7 @@ ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.0
 ARG S6_OVERLAY_VERSION=3.1.1.2
-ARG BUILDDATE=20220804-01
+ARG BUILDDATE=20220805-02
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
@@ -38,6 +38,43 @@ RUN chmod 0755 /etc/profile.d/unburden.sh
 # add CalvinAD trusted root certificate
 COPY inc/CalvinCollege-ad-CA.crt /etc/ssl/certs/CalvinCollege-ad-CA.crt
 RUN ln -s -f /etc/ssl/certs/CalvinCollege-ad-CA.crt /etc/ssl/certs/ddbc78f4.0
+
+# Drop all inc/ configuration files
+# krb5.conf, sssd.conf, idmapd.conf
+COPY inc/krb5.conf /etc/krb5.conf
+COPY inc/nsswitch.conf /etc/nsswitch.conf
+COPY inc/sssd.conf /etc/sssd/sssd.conf
+RUN chmod 600 /etc/sssd/sssd.conf
+RUN chown root:root /etc/sssd/sssd.conf
+COPY inc/idmapd.conf /etc/idmapd.conf
+
+# pam configs
+COPY inc/common-auth /etc/pam.d/common-auth
+COPY inc/common-session /etc/pam.d/common-session
+
+# use the secrets to edit sssd.conf appropriately
+RUN --mount=type=secret,id=LDAP_BIND_USER \
+    source /run/secrets/LDAP_BIND_USER && \
+    sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf
+RUN --mount=type=secret,id=LDAP_BIND_PASSWORD \
+    source /run/secrets/LDAP_BIND_PASSWORD && \
+    sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf
+RUN --mount=type=secret,id=DEFAULT_DOMAIN_SID \
+    source /run/secrets/DEFAULT_DOMAIN_SID && \
+    sed -i 's@%%DEFAULT_DOMAIN_SID%%@'"$DEFAULT_DOMAIN_SID"'@g' /etc/sssd/sssd.conf
+
+# Setup multiple stuff going on in the container instead of just single access  -------------------------#
+# S6 overlay from https://github.com/just-containers/s6-overlay
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+    tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && \
+    rm -f /tmp/s6-overlay-*.tar.xz
+
+ENV S6_CMD_WAIT_FOR_SERVICES=1 S6_CMD_WAIT_FOR_SERVICES_MAXTIME=5000
+
+ENTRYPOINT ["/init"]
+COPY s6-overlay/ /etc/s6-overlay
 
 # Add all packages needed for R, and install all required dependencies
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/Rpackages.dep /root
@@ -88,6 +125,7 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV TERM xterm-256color
 
 # Debugging
 #RUN apt update -y && \
@@ -97,40 +135,3 @@ ENV LC_ALL en_US.UTF-8
 #    iputils-ping \
 #    bind9-dnsutils && \
 #    rm -rf /var/lib/apt/lists/*
-
-# Drop all inc/ configuration files
-# krb5.conf, sssd.conf, idmapd.conf
-COPY inc/krb5.conf /etc/krb5.conf
-COPY inc/nsswitch.conf /etc/nsswitch.conf
-COPY inc/sssd.conf /etc/sssd/sssd.conf
-RUN chmod 600 /etc/sssd/sssd.conf
-RUN chown root:root /etc/sssd/sssd.conf
-COPY inc/idmapd.conf /etc/idmapd.conf
-
-# pam configs
-COPY inc/common-auth /etc/pam.d/common-auth
-COPY inc/common-session /etc/pam.d/common-session
-
-# use the secrets to edit sssd.conf appropriately
-RUN --mount=type=secret,id=LDAP_BIND_USER \
-    source /run/secrets/LDAP_BIND_USER && \
-    sed -i 's@%%LDAP_BIND_USER%%@'"$LDAP_BIND_USER"'@g' /etc/sssd/sssd.conf
-RUN --mount=type=secret,id=LDAP_BIND_PASSWORD \
-    source /run/secrets/LDAP_BIND_PASSWORD && \
-    sed -i 's@%%LDAP_BIND_PASSWORD%%@'"$LDAP_BIND_PASSWORD"'@g' /etc/sssd/sssd.conf
-RUN --mount=type=secret,id=DEFAULT_DOMAIN_SID \
-    source /run/secrets/DEFAULT_DOMAIN_SID && \
-    sed -i 's@%%DEFAULT_DOMAIN_SID%%@'"$DEFAULT_DOMAIN_SID"'@g' /etc/sssd/sssd.conf
-
-# Setup multiple stuff going on in the container instead of just single access  -------------------------#
-# S6 overlay from https://github.com/just-containers/s6-overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
-    tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && \
-    rm -f /tmp/s6-overlay-*.tar.xz
-
-ENV S6_CMD_WAIT_FOR_SERVICES=1 S6_CMD_WAIT_FOR_SERVICES_MAXTIME=5000
-
-ENTRYPOINT ["/init"]
-COPY s6-overlay/ /etc/s6-overlay
