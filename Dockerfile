@@ -4,9 +4,9 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
-ARG R_VERSION=4.2.0
+ARG R_VERSION=4.2.1
 ARG S6_OVERLAY_VERSION=3.1.1.2
-ARG BUILDDATE=20220808-01
+ARG BUILDDATE=20220808-02
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
