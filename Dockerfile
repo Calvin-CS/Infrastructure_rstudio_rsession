@@ -49,12 +49,14 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/nsswitch.conf /etc
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/sssd.conf /etc/sssd
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/idmapd.conf /etc
-RUN chmod 600 /etc/sssd/sssd.conf
+RUN chmod 0600 /etc/sssd/sssd.conf
 RUN chown root:root /etc/sssd/sssd.conf
 
 # pam configs
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/common-auth /etc/pam.d
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/common-session /etc/pam.d
+RUN chmod 0644 /etc/pam.d/common-auth && \
+    chmod 0644 /etc/pam.d/common-session
 
 # use the secrets to edit sssd.conf appropriately
 RUN --mount=type=secret,id=LDAP_BIND_USER \
@@ -113,6 +115,9 @@ RUN rm -f /etc/rstudio/r-versions
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/r-versions /etc/rstudio
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/r-versions /var/lib/rstudio-server
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/rsession-profile /etc/rstudio
+RUN chmod 0644 /etc/rstudio/r-versions && \
+    chmod 0644 /var/lib/rstudio-server/r-versions && \
+    chmod 0644 /etc/rstudio/rsession-profile
 
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
@@ -122,6 +127,8 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/rse
 #   however, we need to make sure we copy the conf files
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/vscode.conf /etc/rstudio
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/vscode-user-settings.json /etc/rstudio
+RUN chmod 0644 /etc/rstudio/vscode.conf && \
+    chmod 0644 /etc/rstudio/vscode-user-settings.json
 
 # Locale configuration --------------------------------------------------------#
 RUN apt update -y && \
