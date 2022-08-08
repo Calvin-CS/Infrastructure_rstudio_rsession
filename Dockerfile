@@ -6,7 +6,7 @@ ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.1
 ARG S6_OVERLAY_VERSION=3.1.1.2
-ARG BUILDDATE=20220808-02
+ARG BUILDDATE=20220808-03
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
@@ -102,6 +102,7 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/ins
 RUN apt update -y --fix-missing && \
     /bin/sh /root/install-Rstudio.sh && \
     rm -f /root/install-Rstudio.sh && \
+    chmod 0777 /usr/lib/rstudio-server/resources/terminal/bash && \
     rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8788/tcp
