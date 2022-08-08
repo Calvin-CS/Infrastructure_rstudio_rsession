@@ -35,13 +35,14 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir.conf /etc/unburden-home-dir
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir.list /etc/unburden-home-dir.list
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir /etc/default/unburden-home-dir
-RUN chmod 0755 /etc/profile.d/unburden.sh
-RUN chmod 0644 /etc/unburden-home-dir
-RUN chmod 0644 /etc/unburden-home-dir.list
-RUN chmod 0644 /etc/default/unburden-home-dir
+RUN chmod 0755 /etc/profile.d/unburden.sh && \
+    chmod 0644 /etc/unburden-home-dir && \
+    chmod 0644 /etc/unburden-home-dir.list && \
+    chmod 0644 /etc/default/unburden-home-dir
 
 # add CalvinAD trusted root certificate
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/CalvinCollege-ad-CA.crt /etc/ssl/certs
+RUN chmod 0644 /etc/ssl/certs/CalvinCollege-ad-CA.crt
 RUN ln -s -f /etc/ssl/certs/CalvinCollege-ad-CA.crt /etc/ssl/certs/ddbc78f4.0
 
 # krb5.conf, sssd.conf, idmapd.conf
@@ -49,7 +50,10 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/nsswitch.conf /etc
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/sssd.conf /etc/sssd
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/idmapd.conf /etc
-RUN chmod 0600 /etc/sssd/sssd.conf
+RUN chmod 0600 /etc/sssd/sssd.conf && \
+    chmod 0644 /etc/krb5.conf && \
+    chmod 0644 /etc/nsswitch.conf && \
+    chmod 0644 /etc/idmapd.conf
 RUN chown root:root /etc/sssd/sssd.conf
 
 # pam configs
