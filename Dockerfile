@@ -126,9 +126,13 @@ RUN rm -f /etc/rstudio/r-versions
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/r-versions /etc/rstudio
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/r-versions /var/lib/rstudio-server
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/rsession-profile /etc/rstudio
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/rserver-minimal.conf /etc/rstudio/rserver.conf
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/rsession-minimal.conf /etc/rstudio/rsession.conf
 RUN chmod 0644 /etc/rstudio/r-versions && \
     chmod 0644 /var/lib/rstudio-server/r-versions && \
-    chmod 0644 /etc/rstudio/rsession-profile
+    chmod 0644 /etc/rstudio/rsession-profile && \
+    chmod 0644 /etc/rstudio/rserver.conf && \
+    chmod 0644 /etc/rstudio/rsession.conf
 
 # Install Python via Miniconda -------------------------------------------------#
 # NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
