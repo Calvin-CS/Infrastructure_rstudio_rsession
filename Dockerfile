@@ -14,7 +14,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Start with base Ubuntu
 # Set timezone
-RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && \
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo "$TZ" > /etc/timezone
 
 # add a few system packages for SSSD/authentication
@@ -155,6 +155,10 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV TERM xterm-256color
+ENV TZ=US/Michigan
+
+# Force set the TZ variable
+COPY --chmod=0755 inc/timezone.sh /etc/profile.d/timezone.sh
 
 # Debugging
 #RUN apt update -y && \
