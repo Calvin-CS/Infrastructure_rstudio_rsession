@@ -3,12 +3,15 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 
 # Set versions and platforms
 ARG R_VERSION=4.2.1
-ARG BUILDDATE=20220819-04
+ARG BUILDDATE=20220819-05
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
 
 ENTRYPOINT ["/init"]
+
+# Update s6
+COPY s6-overlay/ /etc/s6-overlay
 
 # Access control
 RUN echo "ldap_access_filter = memberOf=CN=CS-Rights-rstudio,OU=Groups,OU=CalvinCS,DC=ad,DC=calvin,DC=edu" >> /etc/sssd/sssd.conf
