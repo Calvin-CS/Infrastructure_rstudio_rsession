@@ -6,7 +6,7 @@ ARG UBUNTU_VERSION=2004
 ARG UBUNTU_CODENAME=focal
 ARG R_VERSION=4.2.1
 ARG S6_OVERLAY_VERSION=3.1.1.2
-ARG BUILDDATE=20220819-02
+ARG BUILDDATE=20220819-03
 ARG TZ=US/Michigan
 
 # Do all run commands with bash
@@ -159,12 +159,3 @@ ENV TZ=US/Michigan
 
 # Force set the TZ variable
 COPY --chmod=0755 inc/timezone.sh /etc/profile.d/timezone.sh
-
-# Debugging
-#RUN apt update -y && \
-#    DEBIAN_FRONTEND=noninteractive apt install -y netcat-openbsd \
-#    nmap \
-#    telnet \
-#    iputils-ping \
-#    bind9-dnsutils && \
-#    rm -rf /var/lib/apt/lists/*
