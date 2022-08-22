@@ -1,1 +1,1 @@
-/usr/bin/sleep 2.5
+/bin/bash /root/sssd-blocker.sh
