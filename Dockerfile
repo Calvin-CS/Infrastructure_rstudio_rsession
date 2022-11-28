@@ -39,6 +39,14 @@ RUN apt update -y --fix-missing && \
 
 EXPOSE 8788/tcp
 
+# Install Quarto components ---------------------------------------------------#
+
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/install-Quarto.sh /root
+RUN apt update -y --fix-missing && \
+    /bin/sh /root/install-Quarto.sh && \
+    rm -f /root/install-Quarto.sh && \
+    rm -rf /var/lib/apt/lists/*
+
 # Make NFS mount directories
 RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects
 
