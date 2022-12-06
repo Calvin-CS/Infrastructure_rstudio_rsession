@@ -8,7 +8,7 @@
 import grp
 import time
 
-timeout = 10.0
+timeout = 30.0
 elapsed = 0.0
 success = False
 debug = False
