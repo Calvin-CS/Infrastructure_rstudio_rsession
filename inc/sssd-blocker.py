@@ -4,11 +4,20 @@
 # Purpose: block for up to 10 seconds, testing for SSSD to come online
 # and to be able to successfully lookup a known group for Rstudio.
 # Group: CS-Rights-rstudio  GID: 364562
+# 
+# Changelog: 2023-01-05
+#   - the container should populate a copy of several groups and users
+#     automatically now into /etc/passwd and /etc/group.  If it does this 
+#     correctly, this startup script should be MUCH faster, but without the
+#     guarentees that SSSD comes online.  This *should* be OK; aznfs is making
+#     these files every hour and it should contain everything the container
+#     needs to make this all work correctly.
 
 import grp
 import time
 
-timeout = 30.0
+#timeout = 30.0
+timeout = 20.0
 elapsed = 0.0
 success = False
 debug = False
