@@ -1,6 +1,6 @@
 # append /home/cspasswd to /etc/passwd and /home/csgroup to /etc/group
-PASSWD=/home/cspasswd
-GROUP=/home/csgroup
+PASSWD=/opt/passwd/cspasswd
+GROUP=/opt/passwd/csgroup
 
 if test -f "$PASSWD"; then
 	cat $PASSWD >> /etc/passwd
