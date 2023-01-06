@@ -4,19 +4,24 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230105-4
+ARG BUILDDATE=20230106-1
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
 
 ENTRYPOINT ["/init"]
 
+# Update S6_CMD_WAIT_FOR_SERVICES_MAXTIME
+ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
+
 # Update s6
 COPY s6-overlay/ /etc/s6-overlay
 
 # s6-wait change to sssd-blocker check script
 COPY --chmod=0755 inc/sssd-blocker* /root
-RUN sed -i "s@%%PYTHON_VERSION%%@${PYTHON_VERSION}@" /root/sssd-blocker.sh
+# NOTE: I used to use the NFS python, but that was causing BIG delays; use 
+# system python instead
+#RUN sed -i "s@%%PYTHON_VERSION%%@${PYTHON_VERSION}@" /root/sssd-blocker.sh
 
 # s6-populate users add script
 COPY --chmod=0755 inc/cs-populate-users.sh /root
@@ -51,7 +56,7 @@ RUN apt update -y --fix-missing && \
     rm -rf /var/lib/apt/lists/*
 
 # Make NFS mount directories
-RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects
+RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects /opt/passwd
 
 # Install R -------------------------------------------------------------------#
 # NOTE: skipped, as we will be including R via NFS mount.  However,
