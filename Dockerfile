@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230106-1
+ARG BUILDDATE=20230109-1
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
@@ -87,3 +87,5 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/vsc
 RUN chmod 0644 /etc/rstudio/vscode.conf && \
     chmod 0644 /etc/rstudio/vscode-user-settings.json
 
+# Cleanups
+RUN rm -f /var/log/dpkg.log /var/log/lastlog /var/log/apt/* /var/log/*.log /var/log/fontconfig.log
