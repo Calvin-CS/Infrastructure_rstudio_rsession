@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230119-1
+ARG BUILDDATE=20230119-2
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
@@ -38,7 +38,8 @@ RUN apt update -y && \
 
 # Install cmdstan
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/install-cmdstan.sh /root
-RUN /root/install-cmdstan.sh && \
+RUN chmod 0755 /root/install-cmdstan.sh && \
+    /root/install-cmdstan.sh && \
     rm -f /root/install-cmdstan.sh
 
 # Install RStudio Workbench session components -------------------------------#
