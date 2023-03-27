@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230326-1
+ARG BUILDDATE=20230327-1
 ARG LIBSSL3_VERSION=0.1-1
 
 # Do all run commands with bash
@@ -43,6 +43,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y /root/libssl3_${LIBSSL3_VERSIO
     rm -rf /var/lib/apt/lists/*
 
 # Install cmdstan
+#COPY --chmod=0755 inc/install-cmdstan.sh /root
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/install-cmdstan.sh /root
 RUN chmod 0755 /root/install-cmdstan.sh && \
     /root/install-cmdstan.sh && \
