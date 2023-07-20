@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230327-1
+ARG BUILDDATE=20230720-4
 ARG LIBSSL3_VERSION=0.1-1
 
 # Do all run commands with bash
