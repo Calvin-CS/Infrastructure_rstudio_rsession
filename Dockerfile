@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230327-1
+ARG BUILDDATE=20230720-1
 ARG LIBSSL3_VERSION=0.1-1
 
 # Do all run commands with bash
@@ -20,12 +20,6 @@ COPY s6-overlay/ /etc/s6-overlay
 
 # s6-wait change to sssd-blocker check script
 COPY --chmod=0755 inc/sssd-blocker* /root
-# NOTE: I used to use the NFS python, but that was causing BIG delays; use 
-# system python instead
-#RUN sed -i "s@%%PYTHON_VERSION%%@${PYTHON_VERSION}@" /root/sssd-blocker.sh
-
-# s6-populate users add script
-COPY --chmod=0755 inc/cs-populate-users.sh /root
 
 # Access control
 RUN echo "ldap_access_filter = memberOf=CN=CS-Rights-rstudio,OU=Groups,OU=CalvinCS,DC=ad,DC=calvin,DC=edu" >> /etc/sssd/sssd.conf
