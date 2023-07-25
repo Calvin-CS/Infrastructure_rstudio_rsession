@@ -115,4 +115,4 @@ RUN chmod 0644 /etc/rstudio/vscode.conf && \
 RUN rm -f /var/log/dpkg.log /var/log/lastlog /var/log/apt/* /var/log/*.log /var/log/fontconfig.log /var/log/faillog
 
 # final entrypoint
-ENTRYPOINT ["/usr/bin/bash", "-l", "-c"]
+CMD ["/usr/bin/bash"]
