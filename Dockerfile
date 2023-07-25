@@ -1,34 +1,45 @@
-FROM calvincs.azurecr.io/base-sssdunburden:latest
+FROM ubuntu:focal
 LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230720-4
+ARG BUILDDATE=20230724-1
 ARG LIBSSL3_VERSION=0.1-1
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
 
-ENTRYPOINT ["/init"]
 
-# Update S6_CMD_WAIT_FOR_SERVICES_MAXTIME
-ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
+# Start with some base packages
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y tar wget curl liblzma5 xz-utils && \
+    rm -rf /var/lib/apt/lists/*
 
-# Update s6
-COPY s6-overlay/ /etc/s6-overlay
+# Start with base Ubuntu
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo "$TZ" > /etc/timezone
 
-# s6-wait change to sssd-blocker check script
-COPY --chmod=0755 inc/sssd-blocker* /root
-# NOTE: I used to use the NFS python, but that was causing BIG delays; use 
-# system python instead
-#RUN sed -i "s@%%PYTHON_VERSION%%@${PYTHON_VERSION}@" /root/sssd-blocker.sh
+# add CalvinAD trusted root certificate
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/CalvinCollege-ad-CA.crt /etc/ssl/certs/
+RUN chmod 0644 /etc/ssl/certs/CalvinCollege-ad-CA.crt
+RUN ln -s -f /etc/ssl/certs/CalvinCollege-ad-CA.crt /etc/ssl/certs/ddbc78f4.0
 
-# s6-populate users add script
-COPY --chmod=0755 inc/cs-populate-users.sh /root
+# Locale configuration --------------------------------------------------------#
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y locales && \
+    rm -rf /var/lib/apt/lists/*
 
-# Access control
-RUN echo "ldap_access_filter = memberOf=CN=CS-Rights-rstudio,OU=Groups,OU=CalvinCS,DC=ad,DC=calvin,DC=edu" >> /etc/sssd/sssd.conf
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+ENV TERM xterm-256color
+ENV TZ=US/Michigan
+
+# Force set the TZ variable
+COPY --chmod=0755 inc/timezone.sh /etc/profile.d/timezone.sh
 
 # Add all packages needed for R, and install all required dependencies
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/Rpackages.dep /root
@@ -69,7 +80,7 @@ RUN apt update -y --fix-missing && \
     rm -rf /var/lib/apt/lists/*
 
 # Make NFS mount directories
-RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /rprojects /opt/passwd
+RUN mkdir -p /home /opt/anaconda /opt/code-server /opt/python /opt/R /opt/passwd
 
 # Install R -------------------------------------------------------------------#
 # NOTE: skipped, as we will be including R via NFS mount.  However,
@@ -101,4 +112,7 @@ RUN chmod 0644 /etc/rstudio/vscode.conf && \
     chmod 0644 /etc/rstudio/vscode-user-settings.json
 
 # Cleanups
-RUN rm -f /var/log/dpkg.log /var/log/lastlog /var/log/apt/* /var/log/*.log /var/log/fontconfig.log
+RUN rm -f /var/log/dpkg.log /var/log/lastlog /var/log/apt/* /var/log/*.log /var/log/fontconfig.log /var/log/faillog
+
+# final entrypoint
+ENTRYPOINT ["/usr/bin/bash"]
