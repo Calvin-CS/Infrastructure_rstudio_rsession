@@ -111,6 +111,25 @@ ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/vsc
 RUN chmod 0644 /etc/rstudio/vscode.conf && \
     chmod 0644 /etc/rstudio/vscode-user-settings.json
 
+# add unburden
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y \
+    unburden-home-dir && \
+    rm -rf /var/lib/apt/lists/*
+
+# add unburden config files
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/bashprofile-unburden /etc/profile.d/unburden.sh
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir.conf /etc/unburden-home-dir
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir.list /etc/unburden-home-dir.list
+ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_configs/main/auth/unburden-home-dir /etc/default/unburden-home-dir
+RUN chmod 0755 /etc/profile.d/unburden.sh && \
+    chmod 0644 /etc/unburden-home-dir && \
+    chmod 0644 /etc/unburden-home-dir.list && \
+    chmod 0644 /etc/default/unburden-home-dir
+
+# Make a temporary link from /init to /usr/bin/bash
+RUN ln -s /usr/bin/bash /init
+
 # Cleanups
 RUN rm -f /var/log/dpkg.log /var/log/lastlog /var/log/apt/* /var/log/*.log /var/log/fontconfig.log /var/log/faillog
 
