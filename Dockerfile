@@ -6,6 +6,7 @@ ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
 ARG BUILDDATE=20230724-1
 ARG LIBSSL3_VERSION=0.1-1
+ARG BUILDDATE=20230726-1
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
@@ -127,11 +128,8 @@ RUN chmod 0755 /etc/profile.d/unburden.sh && \
     chmod 0644 /etc/unburden-home-dir.list && \
     chmod 0644 /etc/default/unburden-home-dir
 
-# Make a temporary link from /init to /usr/bin/bash
-RUN ln -s /usr/bin/bash /init
-
 # Cleanups
 RUN rm -f /var/log/dpkg.log /var/log/lastlog /var/log/apt/* /var/log/*.log /var/log/fontconfig.log /var/log/faillog
 
 # final entrypoint
-CMD ["/usr/bin/bash"]
+CMD ["/usr/lib/rstudio-server/bin/rserver-launcher"]
