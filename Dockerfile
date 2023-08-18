@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230818-1
+ARG BUILDDATE=20230818-2
 ARG LIBSSL3_VERSION=0.1-1
 ARG BUILDDATE=20230726-1
 
@@ -127,6 +127,11 @@ RUN chmod 0755 /etc/profile.d/unburden.sh && \
     chmod 0644 /etc/unburden-home-dir && \
     chmod 0644 /etc/unburden-home-dir.list && \
     chmod 0644 /etc/default/unburden-home-dir
+
+# Final fixup for PATH issues
+RUN mkdir -p /export && \
+    ln -s /opt/anaconda /export/anaconda && \
+    ln -s /opt/python /export/python
 
 # Cleanups
 RUN rm -f /var/log/dpkg.log /var/log/lastlog /var/log/apt/* /var/log/*.log /var/log/fontconfig.log /var/log/faillog
