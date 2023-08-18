@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230818-2
+ARG BUILDDATE=20230818-3
 ARG LIBSSL3_VERSION=0.1-1
 ARG BUILDDATE=20230726-1
 
@@ -41,6 +41,13 @@ ENV TZ=US/Michigan
 
 # Force set the TZ variable
 COPY --chmod=0755 inc/timezone.sh /etc/profile.d/timezone.sh
+
+# First, need to get the ubuntu-toolchain-r PPA
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common && \
+    DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    apt update -y && \
+    apt dist-upgrade -y 
 
 # Add all packages needed for R, and install all required dependencies
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/Rpackages.dep /root
