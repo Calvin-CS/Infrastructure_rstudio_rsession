@@ -7,10 +7,10 @@ ARG PYTHON_VERSION=3.9.12
 ARG BUILDDATE=20230818-3
 ARG LIBSSL3_VERSION=0.1-1
 ARG BUILDDATE=20230821-1
+ARG UBUNTUCODENAME="focal"
 
 # Do all run commands with bash
 SHELL ["/bin/bash", "-c"] 
-
 
 # Start with some base packages
 RUN apt update -y && \
@@ -108,8 +108,15 @@ RUN chmod 0644 /etc/rstudio/r-versions && \
     chmod 0644 /etc/rstudio/rserver.conf && \
     chmod 0644 /etc/rstudio/rsession.conf
 
-# Install Python via Miniconda -------------------------------------------------#
-# NOTE: skipped, as we will be including Python with Jupyter via NFS mount 
+# Install Python via CS Anaconda package -------------------------------------------------#
+RUN echo "deb [signed-by=/usr/share/keyrings/csrepo.gpg] http://cpscadmin.cs.calvin.edu/repos/cpsc-ubuntu/ ${UBUNTUCODENAME} main" | tee -a /etc/apt/sources.list.d/cs-ubuntu-software-${UBUNTUCODENAME}.list && \
+    curl https://cpscadmin.cs.calvin.edu/repos/cpsc-ubuntu/csrepo.asc | tee /tmp/csrepo.asc && \
+    gpg --dearmor /tmp/csrepo.asc && \
+    mv /tmp/csrepo.asc.gpg /usr/share/keyrings/csrepo.gpg && \
+    rm -f /tmp/csrepo.asc
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    csanaconda
 
 # Install VSCode code-server --------------------------------------------------#
 # NOTE: skipped, as we will be including VSCode code-server via NFS mount 
