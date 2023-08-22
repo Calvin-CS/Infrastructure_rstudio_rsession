@@ -4,9 +4,8 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.2.2
 ARG PYTHON_VERSION=3.9.12
-ARG BUILDDATE=20230818-3
+ARG BUILDDATE=20230822-1
 ARG LIBSSL3_VERSION=0.1-1
-ARG BUILDDATE=20230821-1
 ARG UBUNTUCODENAME="focal"
 
 # Do all run commands with bash
@@ -117,6 +116,10 @@ RUN echo "deb [signed-by=/usr/share/keyrings/csrepo.gpg] http://cpscadmin.cs.cal
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
     csanaconda
+
+# Jupyter config
+RUN mkdir -p /etc/jupyter && chmod 0755 /etc/jupyter
+COPY --chmod=0644 inc/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
 # Install VSCode code-server --------------------------------------------------#
 # NOTE: skipped, as we will be including VSCode code-server via NFS mount 
