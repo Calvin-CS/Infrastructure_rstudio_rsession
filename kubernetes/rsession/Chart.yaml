@@ -1,0 +1,4 @@
+apiVersion: v2
+name: rsession
+description: A Helm chart for Kubernetes deployment of rsession for caching
+version: 0.1.0

@@ -1,0 +1,6 @@
+image:
+  registry: calvincs.azurecr.io
+  name: rsession-daily
+  tag: latest
+kubernetes:
+  node: nodenamehere
