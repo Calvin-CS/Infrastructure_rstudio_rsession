@@ -8,7 +8,7 @@ export LOGNAME=/tmp/cache-rsession-log-`date +%Y%m%d%k%M%S`.txt
 export LOCALDIR=`dirname $0`
 
 {
-    for NODE in $(/snap/bin/kubectl get nodes | /usr/bin/grep rstudio | /usr/bin/awk '{print $1;}')
+    for NODE in $(/snap/bin/kubectl get nodes | /usr/bin/grep syspool | /usr/bin/awk '{print $1;}')
     do
         
         # first generate a unique time for this run
