@@ -8,7 +8,7 @@ export LOGNAME=/tmp/cache-rsession-log-`date +%Y%m%d%k%M%S`.txt
 export LOCALDIR=`dirname $0`
 
 {
-    for NODE in $(/snap/bin/kubectl get nodes | /usr/bin/grep syspool | /usr/bin/awk '{print $1;}')
+    for NODE in $(/snap/bin/kubectl get nodes | /usr/bin/grep sysnodes | /usr/bin/awk '{print $1;}')
     do
         
         # first generate a unique time for this run
@@ -16,7 +16,7 @@ export LOCALDIR=`dirname $0`
         
         # use helm to deploy on the specified node
         echo "Installing rsession-daily on node ${NODE}"
-        /snap/bin/helm upgrade --install --create-namespace --atomic --wait --namespace rstudio rsession-${DATETIME} ${LOCALDIR}/rsession --set kubernetes.node=${NODE}
+        /snap/bin/helm upgrade --install --create-namespace --atomic --wait --namespace rstudio rsession-${DATETIME} ${LOCALDIR}/rsession --set kubernetes.node=${NODE} --timeout 10m0s
         /usr/bin/sleep 5
         echo " -- uninstalling now!"
         /snap/bin/helm uninstall rsession-${DATETIME} --namespace rstudio
