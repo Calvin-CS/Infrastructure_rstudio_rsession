@@ -9,9 +9,9 @@ on:
 
 jobs:
   build_push_image:
-    # runs-on: ubuntu-20.04
-    runs-on: arc-runners-infrastructure
-    #container: ubuntu-20.04
+    name: Build and push the rstudio image
+    runs-on: ubuntu-20.04
+
     steps:
       - uses: actions/checkout@v4
 
