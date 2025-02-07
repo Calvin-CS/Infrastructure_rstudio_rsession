@@ -4,7 +4,7 @@ LABEL maintainer="Chris Wieringa <cwieri39@calvin.edu>"
 # Set versions and platforms
 ARG R_VERSION=4.4.2
 ARG PYTHON_VERSION=3.11.11
-ARG BUILDDATE=20250207-1
+ARG BUILDDATE=20250207-2
 ARG LIBSSL3_VERSION=0.1-1
 ARG UBUNTUCODENAME="focal"
 
