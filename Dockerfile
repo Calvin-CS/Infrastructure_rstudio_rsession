@@ -13,7 +13,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Start with some base packages
 RUN apt update -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y tar wget curl liblzma5 xz-utils && \
+    DEBIAN_FRONTEND=noninteractive apt install -y tar wget curl liblzma5 xz-utils software-properties-common && \
     rm -rf /var/lib/apt/lists/*
 
 # Start with base Ubuntu
@@ -41,12 +41,12 @@ ENV TZ=US/Michigan
 # Force set the TZ variable
 COPY --chmod=0755 inc/timezone.sh /etc/profile.d/timezone.sh
 
-# First, need to get the ubuntu-toolchain-r PPA
-RUN apt update -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common && \
-    DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
-    apt update -y && \
-    apt dist-upgrade -y 
+# # First, need to get the ubuntu-toolchain-r PPA
+# RUN apt update -y && \
+#     DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common && \
+#     #DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+#     apt update -y && \
+#     apt dist-upgrade -y 
 
 # Add all packages needed for R, and install all required dependencies
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/Rpackages.dep /root
@@ -112,10 +112,9 @@ RUN echo "deb [signed-by=/usr/share/keyrings/csrepo.gpg] http://cpscadmin.cs.cal
     curl https://cpscadmin.cs.calvin.edu/repos/cpsc-ubuntu/csrepo.asc | tee /tmp/csrepo.asc && \
     gpg --dearmor /tmp/csrepo.asc && \
     mv /tmp/csrepo.asc.gpg /usr/share/keyrings/csrepo.gpg && \
-    rm -f /tmp/csrepo.asc
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    csanaconda
+    rm -f /tmp/csrepo.asc && \
+    apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y csanaconda
 
 # Jupyter config
 RUN mkdir -p /etc/jupyter && chmod 0755 /etc/jupyter
