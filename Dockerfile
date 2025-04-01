@@ -41,12 +41,11 @@ ENV TZ=US/Michigan
 # Force set the TZ variable
 COPY --chmod=0755 inc/timezone.sh /etc/profile.d/timezone.sh
 
-# # First, need to get the ubuntu-toolchain-r PPA
-# RUN apt update -y && \
-#     DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common && \
-#     #DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
-#     apt update -y && \
-#     apt dist-upgrade -y 
+# First, need to get the ubuntu-toolchain-r PPA
+RUN apt update -y && \
+    DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    apt update -y && \
+    apt dist-upgrade -y 
 
 # Add all packages needed for R, and install all required dependencies
 ADD https://raw.githubusercontent.com/Calvin-CS/Infrastructure_r_server/main/Rpackages.dep /root
